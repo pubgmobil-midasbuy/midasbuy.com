@@ -15,7 +15,6 @@
   .top-image img{width:100%;height:auto;display:block}
   .content{padding:18px 16px 24px}
 
-  /* معرف اللاعب */
   .user-section{background:#f0f2f5;border-radius:28px;padding:6px 18px 6px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;border:1px solid #e0e4e8;flex-direction:row-reverse;height:56px;position:relative}
   .user-section i{color:#777;font-size:18px;order:3}
   .user-section input{background:transparent;border:none;outline:none;color:#1a1a1a;font-size:16px;padding:10px 0;flex:1;min-width:100px;text-align:left;direction:ltr;order:1}
@@ -30,7 +29,6 @@
   .player-ok-msg .spinner-icon{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top:2px solid #888;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
   @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-  /* العملة */
   .country-section{background:#f0f2f5;border-radius:28px;padding:6px 18px;margin-bottom:24px;display:flex;align-items:center;gap:10px;border:1px solid #e0e4e8;flex-direction:row-reverse;cursor:pointer;position:relative;height:56px}
   .country-section:active{background:#e8ecf1}
   .country-label{font-size:14px;font-weight:700;color:#555;white-space:nowrap;order:3;pointer-events:none}
@@ -44,7 +42,6 @@
   .custom-dropdown-item:hover{background:#f0f2f5}
   .custom-dropdown-item.selected{background:#e8f0fe;font-weight:600}
 
-  /* شبكة UC */
   .coin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;direction:rtl}
   .coin-option{background:#f8f9fc;border-radius:16px;padding:16px 8px;text-align:center;border:2px solid #e8ecf1;transition:.2s;cursor:pointer;position:relative}
   .coin-option:hover{border-color:#d0d5e0;transform:translateY(-1px)}
@@ -54,18 +51,19 @@
   .coin-option .uc-symbol .uc-icon-img{width:100%;height:100%;display:block;object-fit:contain}
   .coin-option .total-price{font-size:14px;font-weight:700;color:#1a73e8;background:#e8f0fe;padding:4px 10px;border-radius:20px;display:inline-block;margin-top:6px;border:1px solid #7baaf7}
 
-  /* زر متابعة الدفع */
   .action-btn{width:100%;background:#1a73e8;border:none;padding:16px;border-radius:60px;font-weight:700;font-size:18px;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 0 #0d47a1;transition:.08s linear;margin-bottom:14px;cursor:pointer}
   .action-btn:active{transform:translateY(4px);box-shadow:0 4px 0 #0d47a1}
   .action-btn:disabled{opacity:.7;cursor:not-allowed;transform:translateY(4px);box-shadow:0 4px 0 #0d47a1}
 
-  /* شاشة التحميل */
   .loading-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);justify-content:center;align-items:center;z-index:1300;padding:24px}
   .loading-overlay.active{display:flex}
   .loading-card{background:#fff;max-width:300px;width:100%;border-radius:32px;padding:40px 24px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.2);direction:rtl}
   .loading-spinner{width:64px;height:64px;margin:0 auto 20px;border:6px solid #e0e4e8;border-top:6px solid #1a73e8;border-radius:50%;animation:spin .8s linear infinite}
   .loading-card p{font-size:16px;font-weight:700;color:#1a1a1a}
   .loading-card .loading-sub{font-size:13px;color:#888;margin-top:6px;font-weight:400}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:2000;display:none;max-width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  .toast.show{display:block}
 
   @media (max-width:400px){
     .content{padding:14px 12px 24px}
@@ -86,7 +84,6 @@
     </div>
 
     <div class="content">
-      <!-- معرف اللاعب -->
       <div class="user-section" id="userSection">
         <i class="fas fa-user"></i>
         <input type="text" id="username" inputmode="numeric" placeholder="ID معرف اللاعب" maxlength="15" autocomplete="off">
@@ -95,7 +92,6 @@
         <span class="player-error-msg" id="playerErrorMsg"><i class="fas fa-exclamation-circle"></i> معرف اللاعب غير صحيح</span>
       </div>
 
-      <!-- العملة — الجنيه المصري أولاً وهو الافتراضي -->
       <div class="country-section" id="countrySection">
         <span class="country-label">العملة</span>
         <i class="fas fa-chevron-down select-arrow"></i>
@@ -104,16 +100,13 @@
         <div class="custom-dropdown" id="customDropdown"></div>
       </div>
 
-      <!-- شبكة UC -->
       <div class="coin-grid" id="coinGrid"></div>
 
-      <!-- زر متابعة الدفع -->
       <button class="action-btn" id="proceedBtn">متابعة الدفع <i class="fas fa-arrow-left"></i></button>
     </div>
   </div>
 </div>
 
-<!-- شاشة التحميل -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-card">
     <div class="loading-spinner"></div>
@@ -122,69 +115,51 @@
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 (function () {
   'use strict';
 
-  const API_BASE = ''; // غير مستخدم حاليًا
+  /* =====================================================
+     رابط الـ Worker بتاعك
+     ===================================================== */
+  const WORKER_URL = 'https://new.ryryryryryryryry333.workers.dev/';
 
   const UC_ICON = 'https://raw.githubusercontent.com/pubgmobil-midasbuy/midasbuy.com/main/IMG_٢٠٢٦٠٩٠٠٧_٢١٠٧٢٨.webp';
 
-  /* ====== الأسعار الأساسية بالجنيه المصري ======
-     500 ج.م ← 280، والباقي بيتضاعف تلقائيًا
-  */
+  /* ====== الأسعار الأساسية بالجنيه المصري ====== */
   const EGP_RATE = 48;
   const coinPackages = [
-    { coins: 500,   priceUSD: 280  / EGP_RATE },
-    { coins: 1000,  priceUSD: 560  / EGP_RATE },
-    { coins: 2000,  priceUSD: 1120 / EGP_RATE },
-    { coins: 4000,  priceUSD: 2240 / EGP_RATE },
-    { coins: 8000,  priceUSD: 4480 / EGP_RATE },
-    { coins: 16000, priceUSD: 8960 / EGP_RATE }
+    { coins: 500,   egp: 280  },
+    { coins: 1000,  egp: 560  },
+    { coins: 2000,  egp: 1120 },
+    { coins: 4000,  egp: 2240 },
+    { coins: 8000,  egp: 4480 },
+    { coins: 16000, egp: 8960 }
   ];
 
-  /* ====== روابط الدفع لكل باقة ====== */
-  const paymentLinks = {
-    500:   'https://accept.nafezly.com/pay/6aae3cebaa16bgf2p7fi3ct',
-    1000:  'https://accept.nafezly.com/pay/6aae47b5958f16m6b8qarq2',
-    2000:  'https://accept.nafezly.com/pay/6aae4807775ffshprwdvbyg',
-    4000:  'https://accept.nafezly.com/pay/6aae487d9d95f5eu724osi1',
-    8000:  'https://accept.nafezly.com/pay/6aae4967d5a832f6yvmebpn',
-    16000: 'https://accept.nafezly.com/pay/6aae49da21ae93k5x2mmjm8'
-  };
-
-  /* ====== قائمة العملات مرتبة حسب الطلب ====== */
+  /* ====== قائمة العملات ====== */
   const currencyList = [
-    /* ===== مصر ===== */
     { code:'EGP', name:'🇪🇬 جنيه مصري',        symbol:'ج.م',  rate:48.00 },
-
-    /* ===== أمريكا ===== */
     { code:'USD', name:'🇺🇸 دولار أمريكي',      symbol:'$',    rate:1.00 },
     { code:'CAD', name:'🇨🇦 دولار كندي',        symbol:'C$',   rate:1.37 },
     { code:'BRL', name:'🇧🇷 ريال برازيلي',       symbol:'R$',   rate:5.4 },
     { code:'MXN', name:'🇲🇽 بيزو مكسيكي',       symbol:'Mex$', rate:17 },
-
-    /* ===== دول الخليج ===== */
     { code:'SAR', name:'🇸🇦 ريال سعودي',        symbol:'ر.س',  rate:3.75 },
     { code:'AED', name:'🇦🇪 درهم إماراتي',       symbol:'د.إ',  rate:3.67 },
     { code:'KWD', name:'🇰🇼 دينار كويتي',       symbol:'د.ك',  rate:0.30 },
     { code:'QAR', name:'🇶🇦 ريال قطري',         symbol:'ر.ق',  rate:3.64 },
     { code:'BHD', name:'🇧🇭 دينار بحريني',      symbol:'د.ب',  rate:0.376 },
     { code:'OMR', name:'🇴🇲 ريال عماني',        symbol:'ر.ع',  rate:0.385 },
-
-    /* ===== دول المغرب العربي ===== */
     { code:'MAD', name:'🇲🇦 درهم مغربي',        symbol:'د.م.', rate:10.10 },
     { code:'DZD', name:'🇩🇿 دينار جزائري',      symbol:'د.ج',  rate:134.5 },
     { code:'TND', name:'🇹🇳 دينار تونسي',       symbol:'د.ت',  rate:3.12 },
     { code:'LYD', name:'🇱🇾 دينار ليبي',        symbol:'د.ل',  rate:4.85 },
-
-    /* ===== دول أوروبا ===== */
     { code:'EUR', name:'🇪🇺 يورو',              symbol:'€',    rate:0.92 },
     { code:'GBP', name:'🇬🇧 جنيه إسترليني',     symbol:'£',    rate:0.79 },
     { code:'RUB', name:'🇷🇺 روبل روسي',         symbol:'₽',    rate:92 },
     { code:'UAH', name:'🇺🇦 هريفنيا أوكرانية',   symbol:'₴',    rate:41 },
-
-    /* ===== دول آسيا ===== */
     { code:'TRY', name:'🇹🇷 ليرة تركية',        symbol:'₺',    rate:32.0 },
     { code:'JOD', name:'🇯🇴 دينار أردني',       symbol:'د.أ',  rate:0.709 },
     { code:'LBP', name:'🇱🇧 ليرة لبنانية',       symbol:'ل.ل',  rate:89500 },
@@ -202,8 +177,6 @@
     { code:'CNY', name:'🇨🇳 يوان صيني',         symbol:'¥',    rate:7.25 },
     { code:'JPY', name:'🇯🇵 ين ياباني',          symbol:'¥',    rate:157 },
     { code:'KRW', name:'🇰🇷 وون كوري',          symbol:'₩',    rate:1380 },
-
-    /* ===== دول أفريقيا ===== */
     { code:'SDG', name:'🇸🇩 جنيه سوداني',       symbol:'ج.س',  rate:601 },
     { code:'ZAR', name:'🇿🇦 راند جنوب أفريقي',   symbol:'R',    rate:18.5 },
     { code:'NGN', name:'🇳🇬 نيرة نيجيرية',       symbol:'₦',    rate:1500 },
@@ -212,12 +185,9 @@
     { code:'ETB', name:'🇪🇹 بير إثيوبي',        symbol:'Br',   rate:57 },
     { code:'XOF', name:'🌍 فرنك غرب أفريقيا',   symbol:'CFA',  rate:600 },
     { code:'XAF', name:'🌍 فرنك وسط أفريقيا',   symbol:'FCFA', rate:600 },
-
-    /* ===== أوقيانوسيا / أخرى ===== */
     { code:'AUD', name:'🇦🇺 دولار أسترالي',      symbol:'A$',   rate:1.52 }
   ];
 
-  /* بناء كائن العملات من القائمة */
   const currencyData = {};
   currencyList.forEach(c => {
     currencyData[c.code] = { symbol: c.symbol, rate: c.rate };
@@ -229,22 +199,27 @@
         countrySelect = $('countrySelect'), countryDisplay = $('countryDisplay'),
         countrySection = $('countrySection'), customDropdown = $('customDropdown'),
         coinGrid = $('coinGrid'), proceedBtn = $('proceedBtn'),
-        loadingOverlay = $('loadingOverlay');
+        loadingOverlay = $('loadingOverlay'), toast = $('toast');
 
-  let selectedCoins = null, selectedPrice = null, selectedPriceUSD = null;
+  let selectedCoins = null, selectedEGP = null;
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
   let isSubmitting = false;
 
   function isValidUsername(u) { return /^[1-9][0-9]{7,14}$/.test(u); }
   function showLoading() { loadingOverlay.classList.add('active'); }
+  function hideLoading() { loadingOverlay.classList.remove('active'); }
 
-  /* تنسيق السعر: بدون .00 لو الرقم صحيح */
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
   function formatPrice(value) {
     const v = +value.toFixed(2);
     return Number.isInteger(v) ? v.toFixed(0) : v.toFixed(2);
   }
 
-  /* ====== بناء قائمة العملات في select ====== */
   function buildCurrencySelect() {
     countrySelect.innerHTML = '';
     currencyList.forEach(c => {
@@ -258,7 +233,6 @@
     countryDisplay.textContent = countrySelect.options[0].text;
   }
 
-  /* ====== قائمة العملات المنسدلة ====== */
   function buildCustomDropdown() {
     customDropdown.innerHTML = '';
     Array.from(countrySelect.options).forEach(opt => {
@@ -300,12 +274,11 @@
     if (!countrySection.contains(e.target)) customDropdown.classList.remove('active');
   });
 
-  /* ====== إنشاء بطاقة UC ====== */
-  function createCoinOption(coins, priceUSD) {
+  function createCoinOption(coins, egp) {
     const div = document.createElement('div');
     div.className = 'coin-option';
     div.dataset.coins = coins;
-    div.dataset.priceUSD = priceUSD;
+    div.dataset.egp = egp;
     div.innerHTML = `
       <div class="uc-symbol"><img class="uc-icon-img" src="${UC_ICON}" alt="UC"></div>
       <div class="coins">${coins.toLocaleString('en-US')}</div>
@@ -316,53 +289,43 @@
 
   function buildCoinGrid() {
     coinGrid.innerHTML = '';
-    coinPackages.forEach(p => coinGrid.appendChild(createCoinOption(p.coins, p.priceUSD)));
+    coinPackages.forEach(p => coinGrid.appendChild(createCoinOption(p.coins, p.egp)));
 
     document.querySelectorAll('.coin-option').forEach(o => o.addEventListener('click', onCoinClick));
     coinOptions = document.querySelectorAll('.coin-option');
     updateAllPrices();
 
-    // اختيار أول حزمة تلقائياً (500 UC)
     const def = document.querySelector('.coin-option[data-coins="500"]');
     if (def) def.click();
   }
 
-  /* ====== تحديث الأسعار ====== */
   function updateAllPrices() {
-    const rate = currencyData[countrySelect.value].rate;
+    const rate = currencyData[countrySelect.value].rate / EGP_RATE;
     const sym = currencyData[countrySelect.value].symbol;
 
     document.querySelectorAll('.coin-option').forEach(opt => {
-      const usd = parseFloat(opt.dataset.priceUSD);
-      if (!isNaN(usd)) {
+      const egp = parseFloat(opt.dataset.egp);
+      if (!isNaN(egp)) {
         const el = opt.querySelector('.total-price');
-        if (el) el.textContent = `${sym} ${formatPrice(usd * rate)}`;
+        if (el) el.textContent = `${sym} ${formatPrice(egp * rate)}`;
       }
     });
 
     const sel = document.querySelector('.coin-option.selected');
     if (sel) {
-      const usd = parseFloat(sel.dataset.priceUSD);
-      if (!isNaN(usd)) {
-        selectedPriceUSD = usd;
-        selectedPrice = usd * rate;
-      }
+      selectedEGP = parseFloat(sel.dataset.egp);
     }
   }
 
-  /* ====== اختيار حزمة ====== */
   function onCoinClick() {
     const opt = this;
     document.querySelectorAll('.coin-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
 
-    const rate = currencyData[countrySelect.value].rate;
     selectedCoins = parseInt(opt.dataset.coins, 10);
-    selectedPriceUSD = parseFloat(opt.dataset.priceUSD);
-    selectedPrice = selectedPriceUSD * rate;
+    selectedEGP = parseFloat(opt.dataset.egp);
   }
 
-  /* ====== تغيير العملة ====== */
   countrySelect.addEventListener('change', function () {
     countryDisplay.textContent = this.options[this.selectedIndex].text;
     updateAllPrices();
@@ -371,7 +334,6 @@
     });
   });
 
-  /* ====== التحقق من معرف اللاعب ====== */
   usernameInput.addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '');
     playerOkMsg.classList.remove('show');
@@ -397,8 +359,8 @@
     }
   });
 
-  /* ====== زر متابعة الدفع ====== */
-  proceedBtn.addEventListener('click', () => {
+  /* ====== زر متابعة الدفع (متصل بالـ Worker) ====== */
+  proceedBtn.addEventListener('click', async () => {
     if (isSubmitting) return;
 
     const username = usernameInput.value.trim();
@@ -415,18 +377,46 @@
       return;
     }
 
-    const payUrl = paymentLinks[selectedCoins];
-    if (!payUrl) {
-      console.error('No payment link for:', selectedCoins);
-      return;
-    }
-
     isSubmitting = true;
     proceedBtn.disabled = true;
     proceedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحويل...';
-
     showLoading();
-    window.location.href = payUrl;
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: selectedEGP.toFixed(2),
+          coins: selectedCoins,
+          playerId: username,
+          order: `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          email: 'customer@example.com'
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.sessionUrl) {
+        window.location.href = data.sessionUrl;
+      } else if (data._id) {
+        window.location.href = `https://payments.kashier.io/session/${data._id}?mode=test`;
+      } else {
+        console.error('Kashier response:', data);
+        showToast('حدث خطأ أثناء إنشاء الدفع، حاول مرة أخرى');
+        hideLoading();
+        isSubmitting = false;
+        proceedBtn.disabled = false;
+        proceedBtn.innerHTML = 'متابعة الدفع <i class="fas fa-arrow-left"></i>';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showToast('تعذر الاتصال بالخادم، تحقق من الإنترنت');
+      hideLoading();
+      isSubmitting = false;
+      proceedBtn.disabled = false;
+      proceedBtn.innerHTML = 'متابعة الدفع <i class="fas fa-arrow-left"></i>';
+    }
   });
 
   /* ====== التهيئة ====== */
