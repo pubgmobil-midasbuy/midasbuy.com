@@ -764,7 +764,6 @@
       return;
     }
 
-    // ✅ حفظ حالة صفحة الدفع في السجل
     history.pushState({ page: 'payment' }, '', '');
 
     paymentPageOverlay.classList.add('active');
@@ -776,17 +775,27 @@
     if (paymentPageOverlay.classList.contains('active')) {
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
+
+      // ✅ إخفاء علامة التحميل وإرجاع الزر لحالته الطبيعية
+      hideLoading();
+      isSubmitting = false;
+      if (finalPayBtn) finalPayBtn.disabled = false;
     }
+  });
+
+  /* ✅ إخفاء أي loading عند تحميل الصفحة لأول مرة */
+  window.addEventListener('load', function () {
+    hideLoading();
+    isSubmitting = false;
+    if (finalPayBtn) finalPayBtn.disabled = false;
   });
 
   /* ====== زر الدفع النهائي ====== */
   finalPayBtn.addEventListener('click', async () => {
     if (isSubmitting) return;
 
-    // ✅ تحديد طريقة الدفع المختارة
     const selectedMethod = document.querySelector('input[name="payment"]:checked');
-    
-    // ✅ إذا كانت الطريقة غير card أو wallet → لا تفعل شيئاً (الخيارات الثالثة والرابعة للمنظر فقط)
+
     if (!selectedMethod || (selectedMethod.value !== 'card' && selectedMethod.value !== 'wallet')) {
       return;
     }
@@ -819,10 +828,8 @@
         || (data._id ? `https://payments.kashier.io/session/${data._id}?mode=test` : null);
 
       if (sessionUrl) {
-        // ✅ حفظ حالة كاشير قبل التوجيه (بحيث عند الرجوع نرجع لصفحة الدفع)
         history.pushState({ page: 'kashier' }, '', '');
 
-        // ✅ حفظ البيانات في sessionStorage للعودة إليها
         sessionStorage.setItem('paymentState', JSON.stringify({
           page: 'payment',
           playerId: usernameInput.value.trim(),
@@ -832,7 +839,6 @@
           timestamp: Date.now()
         }));
 
-        // ✅ التوجيه لكاشير (بدون إعادة تحميل - نفس الصفحة)
         window.location.href = sessionUrl;
       } else {
         console.error('Kashier response:', data);
