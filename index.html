@@ -562,14 +562,11 @@
         coinGrid = $('coinGrid'), proceedBtn = $('proceedBtn'),
         toast = $('toast'),
         paymentPageOverlay = $('paymentPageOverlay'),
-        finalPayBtn = $('finalPayBtn'),
-        btnText = $('btn-text');
+        finalPayBtn = $('finalPayBtn');
 
   let selectedCoins = null, selectedEGP = null;
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
   let isSubmitting = false;
-
-  const DEFAULT_BTN_TEXT = 'اختر وسيلة الدفع';
 
   function isValidUsername(u) { return /^[1-9][0-9]{7,14}$/.test(u); }
 
@@ -582,12 +579,6 @@
   function formatPrice(value) {
     const v = +value.toFixed(2);
     return Number.isInteger(v) ? v.toFixed(0) : v.toFixed(2);
-  }
-
-  function resetPayButton() {
-    isSubmitting = false;
-    if (finalPayBtn) finalPayBtn.disabled = false;
-    if (btnText) btnText.textContent = DEFAULT_BTN_TEXT;
   }
 
   function buildCurrencySelect() {
@@ -756,27 +747,40 @@
       return;
     }
 
-    resetPayButton();  // ✅ نضمن إن الزر جاهز قبل فتح صفحة الدفع
-
     history.pushState({ page: 'payment' }, '', '');
 
     paymentPageOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
 
-  /* ✅ التعامل مع زر الرجوع داخل التطبيق */
-  window.addEventListener('popstate', function (e) {
-    resetPayButton();  // ✅ إصلاح الزر عند أي رجوع
+  /* ✅ دالة إعادة تعيين زر الدفع */
+  function resetPayButton() {
+    isSubmitting = false;
+    finalPayBtn.disabled = false;
+    document.getElementById('btn-text').textContent = 'اختر وسيلة الدفع';
+  }
 
+  /* ✅ التعامل مع زر الرجوع */
+  window.addEventListener('popstate', function (e) {
     if (paymentPageOverlay.classList.contains('active')) {
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
+      resetPayButton();
     }
   });
 
-  /* ✅ إصلاح الزر عند الرجوع من كاشير (bfcache) */
+  /* ✅ لو المتصفح رجع الصفحة من الكاش (bfcache) */
   window.addEventListener('pageshow', function (e) {
-    resetPayButton();
+    if (e.persisted && paymentPageOverlay.classList.contains('active')) {
+      resetPayButton();
+    }
+  });
+
+  /* ✅ كمان لو رجع من Kashier عن طريق visibilitychange */
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && paymentPageOverlay.classList.contains('active')) {
+      resetPayButton();
+    }
   });
 
   /* ====== زر الدفع النهائي ====== */
@@ -793,7 +797,6 @@
 
     isSubmitting = true;
     finalPayBtn.disabled = true;
-    if (btnText) btnText.textContent = 'جاري المعالجة...';
 
     try {
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -828,16 +831,22 @@
           timestamp: Date.now()
         }));
 
+        // ✅ صفّر حالة الزر قبل المغادرة
+        isSubmitting = false;
+        finalPayBtn.disabled = false;
+
         window.location.href = sessionUrl;
       } else {
         console.error('Kashier response:', data);
         showToast('حدث خطأ أثناء إنشاء الدفع، حاول مرة أخرى');
-        resetPayButton();
+        isSubmitting = false;
+        finalPayBtn.disabled = false;
       }
     } catch (error) {
       console.error('Error:', error);
       showToast('تعذر الاتصال بالخادم، تحقق من الإنترنت');
-      resetPayButton();
+      isSubmitting = false;
+      finalPayBtn.disabled = false;
     }
   });
 
