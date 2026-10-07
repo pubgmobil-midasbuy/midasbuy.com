@@ -736,9 +736,24 @@
     isSubmitting = false;
     finalPayBtn.disabled = false;
     finalPayBtn.removeAttribute('disabled');
+    finalPayBtn.removeAttribute('aria-disabled');
     finalPayBtn.style.opacity = '';
     finalPayBtn.style.cursor = '';
     finalPayBtn.style.pointerEvents = '';
+    finalPayBtn.classList.remove('disabled');
+  }
+
+  /* ✅ إعادة تعيين قوية مع محاولات متعددة لضمان التطبيق بعد bfcache */
+  function forceResetAfterRestore() {
+    resetPayButton();
+    setTimeout(resetPayButton, 0);
+    setTimeout(resetPayButton, 50);
+    setTimeout(resetPayButton, 200);
+    setTimeout(resetPayButton, 500);
+    requestAnimationFrame(() => {
+      resetPayButton();
+      requestAnimationFrame(resetPayButton);
+    });
   }
 
   /* ====== زر متابعة الدفع (فتح صفحة الدفع) ====== */
@@ -757,37 +772,40 @@
       return;
     }
 
-    // ✅ إعادة تعيين الزر قبل فتح صفحة الدفع
-    resetPayButton();
-
+    forceResetAfterRestore();
     history.pushState({ page: 'payment' }, '', '');
     paymentPageOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
 
-  /* ✅ التعامل مع زر الرجوع (جميع الحالات) */
+  /* ✅ عند الرجوع داخل نفس الصفحة */
   window.addEventListener('popstate', function (e) {
     if (paymentPageOverlay.classList.contains('active')) {
-      // كنا في صفحة الدفع → نرجع للصفحة الأولى
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
     }
-    // ✅ إعادة تعيين الزر دائماً (سواء رجعنا للصفحة الأولى أو لصفحة الدفع)
-    resetPayButton();
+    forceResetAfterRestore();
   });
 
-  /* ✅ عند الرجوع من كاشير (استعادة من bfcache) */
+  /* ✅ الأهم: عند الرجوع من كاشير (استعادة من bfcache) */
   window.addEventListener('pageshow', function (e) {
-    resetPayButton();
+    forceResetAfterRestore();
     if (paymentPageOverlay.classList.contains('active')) {
       document.body.style.overflow = 'hidden';
     }
   });
 
-  /* ✅ عند عودة التركيز للنافذة (من كاشير أو تبويب آخر) */
+  /* ✅ عند عودة التركيز للنافذة */
   window.addEventListener('focus', function () {
     if (paymentPageOverlay.classList.contains('active')) {
-      resetPayButton();
+      forceResetAfterRestore();
+    }
+  });
+
+  /* ✅ عند تغيير حالة الرؤية (العودة من تبويب آخر) */
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && paymentPageOverlay.classList.contains('active')) {
+      forceResetAfterRestore();
     }
   });
 
@@ -843,12 +861,12 @@
       } else {
         console.error('Kashier response:', data);
         showToast('حدث خطأ أثناء إنشاء الدفع، حاول مرة أخرى');
-        resetPayButton();
+        forceResetAfterRestore();
       }
     } catch (error) {
       console.error('Error:', error);
       showToast('تعذر الاتصال بالخادم، تحقق من الإنترنت');
-      resetPayButton();
+      forceResetAfterRestore();
     }
   });
 
