@@ -757,22 +757,26 @@
       return;
     }
 
+    // ✅ إعادة تعيين الزر قبل فتح صفحة الدفع
     resetPayButton();
+
     history.pushState({ page: 'payment' }, '', '');
     paymentPageOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
 
-  /* ✅ التعامل مع زر الرجوع داخل نفس الصفحة */
+  /* ✅ التعامل مع زر الرجوع (جميع الحالات) */
   window.addEventListener('popstate', function (e) {
     if (paymentPageOverlay.classList.contains('active')) {
+      // كنا في صفحة الدفع → نرجع للصفحة الأولى
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
     }
+    // ✅ إعادة تعيين الزر دائماً (سواء رجعنا للصفحة الأولى أو لصفحة الدفع)
     resetPayButton();
   });
 
-  /* ✅ الأهم: عند الرجوع من كاشير (استعادة من bfcache) */
+  /* ✅ عند الرجوع من كاشير (استعادة من bfcache) */
   window.addEventListener('pageshow', function (e) {
     resetPayButton();
     if (paymentPageOverlay.classList.contains('active')) {
@@ -780,7 +784,7 @@
     }
   });
 
-  /* ✅ عند عودة التركيز للنافذة */
+  /* ✅ عند عودة التركيز للنافذة (من كاشير أو تبويب آخر) */
   window.addEventListener('focus', function () {
     if (paymentPageOverlay.classList.contains('active')) {
       resetPayButton();
