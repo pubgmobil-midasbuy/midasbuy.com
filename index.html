@@ -735,8 +735,10 @@
   function resetPayButton() {
     isSubmitting = false;
     finalPayBtn.disabled = false;
+    finalPayBtn.removeAttribute('disabled');
     finalPayBtn.style.opacity = '';
     finalPayBtn.style.cursor = '';
+    finalPayBtn.style.pointerEvents = '';
   }
 
   /* ====== زر متابعة الدفع (فتح صفحة الدفع) ====== */
@@ -755,23 +757,34 @@
       return;
     }
 
-    // ✅ إعادة تعيين حالة الزر قبل فتح الصفحة
     resetPayButton();
-
     history.pushState({ page: 'payment' }, '', '');
-
     paymentPageOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
 
-  /* ✅ التعامل مع زر الرجوع */
+  /* ✅ التعامل مع زر الرجوع داخل نفس الصفحة */
   window.addEventListener('popstate', function (e) {
     if (paymentPageOverlay.classList.contains('active')) {
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
     }
-    // ✅ إعادة تعيين حالة زر الدفع عند الرجوع
     resetPayButton();
+  });
+
+  /* ✅ الأهم: عند الرجوع من كاشير (استعادة من bfcache) */
+  window.addEventListener('pageshow', function (e) {
+    resetPayButton();
+    if (paymentPageOverlay.classList.contains('active')) {
+      document.body.style.overflow = 'hidden';
+    }
+  });
+
+  /* ✅ عند عودة التركيز للنافذة */
+  window.addEventListener('focus', function () {
+    if (paymentPageOverlay.classList.contains('active')) {
+      resetPayButton();
+    }
   });
 
   /* ====== زر الدفع النهائي ====== */
