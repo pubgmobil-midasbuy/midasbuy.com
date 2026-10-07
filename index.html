@@ -850,7 +850,8 @@
 
   /* ====== زر الدفع النهائي ====== */
   finalPayBtn.addEventListener('click', async () => {
-    if (isSubmitting) return;
+    // ✅ الفحص يعتمد على حالة الزر الفعلية (loading class) وليس على isSubmitting
+    if (finalPayBtn.classList.contains('loading')) return;
 
     const selectedMethod = document.querySelector('input[name="payment"]:checked');
 
@@ -860,10 +861,9 @@
 
     const method = selectedMethod.value;
 
+    // ✅ ضبط الحالة وإظهار التحميل فوراً وقبل أي شيء آخر
     isSubmitting = true;
     finalPayBtn.disabled = true;
-
-    // ✅ إظهار مؤشر التحميل وإخفاء السهم وتغيير النص مع تأثير اختفاء تدريجي
     finalPayBtn.classList.add('loading');
     if (btnText) btnText.textContent = 'جارٍ التحويل...';
     if (btnArrow) btnArrow.style.display = 'none';
@@ -919,6 +919,9 @@
   buildCoinGrid();
   buildCustomDropdown();
   countrySelect.dispatchEvent(new Event('change'));
+
+  // ✅ ضمان أن الزر يبدأ بحالة نظيفة عند التحميل الأولي
+  resetPayButton();
 
 })();
 </script>
