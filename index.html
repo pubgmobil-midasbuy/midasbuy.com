@@ -318,7 +318,7 @@
     justify-content: space-between;
     padding: 0.5rem 1.25rem;
     box-shadow: none !important;
-    transition: filter 150ms ease;
+    transition: opacity 250ms ease, filter 150ms ease;
   }
 
   .payment-page-overlay .pay-btn span {
@@ -351,6 +351,35 @@
 
   .payment-page-overlay .pay-btn .fas.fa-arrow-left::before {
     content: "\f060";
+  }
+
+  /* ✅ مؤشر التحميل داخل زر الدفع مع تأثير اختفاء تدريجي */
+  .payment-page-overlay .pay-btn.loading {
+    opacity: 0.55 !important;
+    filter: grayscale(0.15);
+    cursor: wait !important;
+    pointer-events: none !important;
+  }
+  .payment-page-overlay .pay-btn.loading:hover {
+    opacity: 0.55 !important;
+    background: #0194fe !important;
+  }
+  .payment-page-overlay .pay-btn .spinner-btn {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.35);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: btn-spin .7s linear infinite;
+    flex-shrink: 0;
+  }
+  .payment-page-overlay .pay-btn.loading .spinner-btn {
+    display: inline-block;
+  }
+  @keyframes btn-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
   @media (max-width: 767px) {
@@ -474,7 +503,8 @@
                 style="height:51px"
                 id="finalPayBtn">
           <span id="btn-text">اختر وسيلة الدفع</span>
-          <span class="fas fa-arrow-left"></span>
+          <span class="spinner-btn" id="btn-spinner"></span>
+          <span class="fas fa-arrow-left" id="btn-arrow"></span>
         </button>
       </div>
     </div>
@@ -562,7 +592,10 @@
         coinGrid = $('coinGrid'), proceedBtn = $('proceedBtn'),
         toast = $('toast'),
         paymentPageOverlay = $('paymentPageOverlay'),
-        finalPayBtn = $('finalPayBtn');
+        finalPayBtn = $('finalPayBtn'),
+        btnText = $('btn-text'),
+        btnArrow = $('btn-arrow'),
+        btnSpinner = $('btn-spinner');
 
   let selectedCoins = null, selectedEGP = null;
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
@@ -741,6 +774,12 @@
     finalPayBtn.style.cursor = '';
     finalPayBtn.style.pointerEvents = '';
     finalPayBtn.classList.remove('disabled');
+    finalPayBtn.classList.remove('loading');
+
+    // ✅ إعادة الشكل الأصلي للزر
+    if (btnText) btnText.textContent = 'اختر وسيلة الدفع';
+    if (btnArrow) btnArrow.style.display = '';
+    if (btnSpinner) btnSpinner.style.display = 'none';
   }
 
   /* ✅ إعادة تعيين قوية مع محاولات متعددة لضمان التطبيق بعد bfcache */
@@ -823,6 +862,12 @@
 
     isSubmitting = true;
     finalPayBtn.disabled = true;
+
+    // ✅ إظهار مؤشر التحميل وإخفاء السهم وتغيير النص مع تأثير اختفاء تدريجي
+    finalPayBtn.classList.add('loading');
+    if (btnText) btnText.textContent = 'جارٍ التحويل...';
+    if (btnArrow) btnArrow.style.display = 'none';
+    if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
     try {
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
