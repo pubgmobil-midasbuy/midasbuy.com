@@ -562,8 +562,7 @@
         coinGrid = $('coinGrid'), proceedBtn = $('proceedBtn'),
         toast = $('toast'),
         paymentPageOverlay = $('paymentPageOverlay'),
-        finalPayBtn = $('finalPayBtn'),
-        btnText = $('btn-text');
+        finalPayBtn = $('finalPayBtn');
 
   let selectedCoins = null, selectedEGP = null;
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
@@ -580,17 +579,6 @@
   function formatPrice(value) {
     const v = +value.toFixed(2);
     return Number.isInteger(v) ? v.toFixed(0) : v.toFixed(2);
-  }
-
-  /* ✅ إعادة ضبط زر الدفع عند الرجوع من كاشير */
-  function resetPayButton() {
-    isSubmitting = false;
-    if (finalPayBtn) {
-      finalPayBtn.disabled = false;
-    }
-    if (btnText) {
-      btnText.textContent = 'اختر وسيلة الدفع';
-    }
   }
 
   function buildCurrencySelect() {
@@ -743,6 +731,14 @@
     }
   });
 
+  /* ====== دالة إعادة تعيين زر الدفع ====== */
+  function resetPayButton() {
+    isSubmitting = false;
+    finalPayBtn.disabled = false;
+    finalPayBtn.style.opacity = '';
+    finalPayBtn.style.cursor = '';
+  }
+
   /* ====== زر متابعة الدفع (فتح صفحة الدفع) ====== */
   proceedBtn.addEventListener('click', () => {
     const username = usernameInput.value.trim();
@@ -759,6 +755,9 @@
       return;
     }
 
+    // ✅ إعادة تعيين حالة الزر قبل فتح الصفحة
+    resetPayButton();
+
     history.pushState({ page: 'payment' }, '', '');
 
     paymentPageOverlay.classList.add('active');
@@ -771,21 +770,8 @@
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
     }
+    // ✅ إعادة تعيين حالة زر الدفع عند الرجوع
     resetPayButton();
-  });
-
-  /* ✅ لما الصفحة ترجع تظهر تاني (من الكاش أو من كاشير) */
-  window.addEventListener('pageshow', function (e) {
-    if (e.persisted || document.visibilityState === 'visible') {
-      resetPayButton();
-    }
-  });
-
-  /* ✅ لو المستخدم رجع للتاب */
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible') {
-      resetPayButton();
-    }
   });
 
   /* ====== زر الدفع النهائي ====== */
@@ -802,7 +788,6 @@
 
     isSubmitting = true;
     finalPayBtn.disabled = true;
-    if (btnText) btnText.textContent = 'جاري المعالجة...';
 
     try {
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
