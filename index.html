@@ -319,7 +319,7 @@
     justify-content: space-between;
     padding: 0.5rem 1.25rem;
     box-shadow: none !important;
-    transition: filter 150ms ease;
+    transition: opacity 250ms ease, filter 150ms ease;
   }
 
   .payment-page-overlay .pay-btn span {
@@ -352,6 +352,35 @@
 
   .payment-page-overlay .pay-btn .fas.fa-arrow-left::before {
     content: "\f060";
+  }
+
+  /* ✅ مؤشر التحميل داخل زر الدفع مع تأثير اختفاء تدريجي */
+  .payment-page-overlay .pay-btn.loading {
+    opacity: 0.55 !important;
+    filter: grayscale(0.15);
+    cursor: wait !important;
+    pointer-events: none !important;
+  }
+  .payment-page-overlay .pay-btn.loading:hover {
+    opacity: 0.55 !important;
+    background: #0194fe !important;
+  }
+  .payment-page-overlay .pay-btn .spinner-btn {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.35);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: btn-spin .7s linear infinite;
+    flex-shrink: 0;
+  }
+  .payment-page-overlay .pay-btn.loading .spinner-btn {
+    display: inline-block;
+  }
+  @keyframes btn-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
   @media (max-width: 767px) {
@@ -475,7 +504,8 @@
                 style="height:51px"
                 id="finalPayBtn">
           <span id="btn-text">اختر وسيلة الدفع</span>
-          <span class="fas fa-arrow-left"></span>
+          <span class="spinner-btn" id="btn-spinner"></span>
+          <span class="fas fa-arrow-left" id="btn-arrow"></span>
         </button>
       </div>
     </div>
@@ -563,7 +593,10 @@
         coinGrid = $('coinGrid'), proceedBtn = $('proceedBtn'),
         toast = $('toast'),
         paymentPageOverlay = $('paymentPageOverlay'),
-        finalPayBtn = $('finalPayBtn');
+        finalPayBtn = $('finalPayBtn'),
+        btnText = $('btn-text'),
+        btnArrow = $('btn-arrow'),
+        btnSpinner = $('btn-spinner');
 
   let selectedCoins = null, selectedEGP = null;
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
@@ -748,6 +781,7 @@
       return;
     }
 
+    forceResetAfterRestore();
     history.pushState({ page: 'payment' }, '', '');
 
     paymentPageOverlay.classList.add('active');
@@ -758,7 +792,28 @@
   function resetPayButton() {
     isSubmitting = false;
     finalPayBtn.disabled = false;
-    document.getElementById('btn-text').textContent = 'اختر وسيلة الدفع';
+    finalPayBtn.removeAttribute('disabled');
+    finalPayBtn.removeAttribute('aria-disabled');
+    finalPayBtn.classList.remove('loading');
+    finalPayBtn.style.opacity = '';
+    finalPayBtn.style.pointerEvents = '';
+
+    if (btnText) btnText.textContent = 'اختر وسيلة الدفع';
+    if (btnArrow) btnArrow.style.display = '';
+    if (btnSpinner) btnSpinner.style.display = 'none';
+  }
+
+  /* ✅ إعادة تعيين قوية مع محاولات متعددة لضمان التطبيق بعد bfcache */
+  function forceResetAfterRestore() {
+    resetPayButton();
+    setTimeout(resetPayButton, 0);
+    setTimeout(resetPayButton, 50);
+    setTimeout(resetPayButton, 200);
+    setTimeout(resetPayButton, 500);
+    requestAnimationFrame(() => {
+      resetPayButton();
+      requestAnimationFrame(resetPayButton);
+    });
   }
 
   /* ✅ التعامل مع زر الرجوع */
@@ -766,27 +821,36 @@
     if (paymentPageOverlay.classList.contains('active')) {
       paymentPageOverlay.classList.remove('active');
       document.body.style.overflow = '';
-      resetPayButton();
     }
+    forceResetAfterRestore();
   });
 
   /* ✅ لو المتصفح رجع الصفحة من الكاش (bfcache) */
   window.addEventListener('pageshow', function (e) {
-    if (e.persisted && paymentPageOverlay.classList.contains('active')) {
-      resetPayButton();
+    forceResetAfterRestore();
+    if (paymentPageOverlay.classList.contains('active')) {
+      document.body.style.overflow = 'hidden';
+    }
+  });
+
+  /* ✅ عند عودة التركيز للنافذة */
+  window.addEventListener('focus', function () {
+    if (paymentPageOverlay.classList.contains('active')) {
+      forceResetAfterRestore();
     }
   });
 
   /* ✅ كمان لو رجع من Kashier عن طريق visibilitychange */
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && paymentPageOverlay.classList.contains('active')) {
-      resetPayButton();
+      forceResetAfterRestore();
     }
   });
 
   /* ====== زر الدفع النهائي ====== */
   finalPayBtn.addEventListener('click', async () => {
-    if (isSubmitting) return;
+    // ✅ الفحص يعتمد على حالة الزر الفعلية (loading class) وليس على isSubmitting
+    if (finalPayBtn.classList.contains('loading')) return;
 
     const selectedMethod = document.querySelector('input[name="payment"]:checked');
 
@@ -796,8 +860,13 @@
 
     const method = selectedMethod.value;
 
+    // ✅ ضبط الحالة وإظهار التحميل فوراً وقبل أي شيء آخر
     isSubmitting = true;
     finalPayBtn.disabled = true;
+    finalPayBtn.classList.add('loading');
+    if (btnText) btnText.textContent = 'جارٍ التحويل...';
+    if (btnArrow) btnArrow.style.display = 'none';
+    if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
     try {
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -832,22 +901,16 @@
           timestamp: Date.now()
         }));
 
-        // ✅ صفّر حالة الزر قبل المغادرة
-        isSubmitting = false;
-        finalPayBtn.disabled = false;
-
         window.location.href = sessionUrl;
       } else {
         console.error('Kashier response:', data);
         showToast('حدث خطأ أثناء إنشاء الدفع، حاول مرة أخرى');
-        isSubmitting = false;
-        finalPayBtn.disabled = false;
+        forceResetAfterRestore();
       }
     } catch (error) {
       console.error('Error:', error);
       showToast('تعذر الاتصال بالخادم، تحقق من الإنترنت');
-      isSubmitting = false;
-      finalPayBtn.disabled = false;
+      forceResetAfterRestore();
     }
   });
 
@@ -855,6 +918,9 @@
   buildCoinGrid();
   buildCustomDropdown();
   countrySelect.dispatchEvent(new Event('change'));
+
+  // ✅ ضمان أن الزر يبدأ بحالة نظيفة عند التحميل الأولي
+  resetPayButton();
 
 })();
 </script>
