@@ -602,7 +602,7 @@
   let coinOptions = [], confirmTimer = null, okTimer = null, lastUsername = '';
   let isSubmitting = false;
 
-  function isValidUsername(u) { return /^[1-9][0-9]{7,14}$/.live(u); }
+  function isValidUsername(u) { return /^[1-9][0-9]{7,14}$/.test(u); }
 
   function showToast(msg) {
     toast.textContent = msg;
@@ -887,7 +887,7 @@
       const data = await response.json();
 
       const sessionUrl = data.sessionUrl
-        || (data._id ? `https://payments.kashier.io/session/${data._id}?mode=live` : null);
+        || (data._id ? `https://payments.kashier.io/session/${data._id}?mode=test` : null);
 
       if (sessionUrl) {
         history.pushState({ page: 'kashier' }, '', '');
